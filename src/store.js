@@ -1,12 +1,18 @@
-import { createStore } from "redux";
+import { combineReducers, createStore } from "redux";
 
-const initialState = {
+const initialStateAccount = {
   loan: 0,
   balance: 0,
   loanPurpose: "",
 };
 
-function reducer(state = initialState, action) {
+const initialStateCustomer = {
+  fullName: "",
+  nationalID: "",
+  createdAt: "",
+};
+
+function accountReducer(state = initialStateAccount, action) {
   switch (action.type) {
     case "account/deposit":
       return { ...state, balance: state.balance + action.payload };
@@ -32,9 +38,33 @@ function reducer(state = initialState, action) {
   }
 }
 
-//Creating store by using createStore method from redux
-const store = createStore(reducer);
+function customerReducer(state = initialStateCustomer, action) {
+  switch (action.type) {
+    case "customer/createCustomer":
+      return {
+        ...state,
+        fullName: action.payload.fullName,
+        nationalID: action.payload.nationalID,
+        createdAt: action.payload.createdAt,
+      };
+    case "customer/updateName":
+      return {
+        ...state,
+        fullName: action.payload,
+      };
+    default:
+      return state;
+  }
+}
 
+//Creating a root reducer so that we can use multiple reducers in store
+const rootReducer = combineReducers({
+  account: accountReducer,
+  customer: customerReducer,
+});
+
+//Creating store by using createStore method from redux
+const store = createStore(rootReducer);
 // store.dispatch({ type: "account/deposit", payload: 1000 });
 // store.dispatch({ type: "account/withdraw", payload: 300 });
 // console.log(store.getState());
@@ -85,4 +115,25 @@ store.dispatch(requestLoan(1000, "Buy a Car"));
 console.log(store.getState());
 
 store.dispatch(payLoan());
+console.log(store.getState());
+
+function createCustomer(fullName, nationalID) {
+  return {
+    type: "customer/createCustomer",
+    payload: { fullName, nationalID, createdAt: new Date().toISOString() },
+  };
+}
+
+function updateName(fullName) {
+  return {
+    type: "customer/updateName",
+    payload: fullName,
+  };
+}
+
+store.dispatch(createCustomer("Shubham Goyal", "007"));
+store.dispatch(deposit(1000));
+console.log(store.getState());
+
+store.dispatch(updateName("Rohan Joshi"));
 console.log(store.getState());
