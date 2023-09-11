@@ -3,6 +3,7 @@ import accountReducer from "./features/accounts/accountSlice";
 import customerReducer from "./features/customers/customerSlice";
 
 //Creating a root reducer so that we can use multiple reducers in store
+//account and customer are state object
 const rootReducer = combineReducers({
   account: accountReducer,
   customer: customerReducer,
