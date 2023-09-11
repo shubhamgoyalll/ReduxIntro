@@ -17,7 +17,7 @@ function AccountOperations() {
     balance,
   } = useSelector((store) => store.account);
 
-  console.log(balance);
+  // console.log(balance);
 
   function handleDeposit() {
     if (!depositAmount) return;
